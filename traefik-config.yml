@@ -1,0 +1,47 @@
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+http:
+  routers:
+    site1:
+      rule: "Host(`site1.divanoblomova.ru`)"
+      entryPoints:
+        - websecure
+      service: site1-service
+      tls:
+        certResolver: myresolver
+
+    site2:
+      rule: "Host(`site2.divanoblomova.ru`)"
+      entryPoints:
+        - websecure
+      service: site2-service
+      tls:
+        certResolver: myresolver
+
+    site3:
+      rule: "Host(`site3.divanoblomova.ru`)"
+      entryPoints:
+        - websecure
+      service: site3-service
+      tls:
+        certResolver: myresolver
+
+  services:
+    site1-service:
+      loadBalancer:
+        servers:
+          - url: "http://site1:80" #Container Name
+
+    site2-service:
+      loadBalancer:
+        servers:
+          - url: "http://site2:80" #Container Name
+
+    site3-service:
+      loadBalancer:
+        servers:
+          - url: "http://site3:80" #Container Name

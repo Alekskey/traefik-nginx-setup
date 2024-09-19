@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  traefik:
+    image: traefik:v2.9
+    restart: unless-stopped
+    command:
+      - "--api.insecure=true"
+      - "--providers.file.directory=/etc/traefik"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=alekskey87@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./letsencrypt:/letsencrypt"
+      - "./traefik-config:/etc/traefik"
+    networks:
+      - web
+
+  site1:
+    image: nginx
+    restart: unless-stopped
+    volumes:
+      - ./site1:/usr/share/nginx/html
+    networks:
+      - web
+
+  site2:
+    image: nginx
+    restart: unless-stopped
+    volumes:
+      - ./site2:/usr/share/nginx/html
+    networks:
+      - web
+
+  site3:
+    image: nginx
+    restart: unless-stopped
+    volumes:
+      - ./site3:/usr/share/nginx/html
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
